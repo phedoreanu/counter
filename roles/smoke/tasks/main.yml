@@ -1,0 +1,51 @@
+- name: starting redis container
+  docker_container:
+    name: redis
+    hostname: redis
+    image: redis:latest
+    state: started
+    recreate: true
+
+- name: starting app container
+  docker_container:
+    name: counter
+    hostname: counter
+    env:
+      REDIS_HOST: redis
+    image: phedoreanu/counter:latest
+    expose:
+    - 8080
+    ports:
+    - 0.0.0.0:8080:8080
+    links:
+    - redis:redis
+    state: started
+    recreate: true
+
+- name: /status smoke test
+  uri:
+    url: http://localhost:8080/status
+    return_content: yes
+    status_code: 200
+  register: webpage
+
+- debug: var=webpage
+
+- name: /get smoke test
+  uri:
+    url: http://localhost:8080/get
+    return_content: yes
+    status_code: 200
+  register: webpage
+
+- debug: var=webpage
+
+- name: removing redis container
+  docker_container:
+    name: redis
+    state: absent
+
+- name: removing app container
+  docker_container:
+    name: counter
+    state: absent

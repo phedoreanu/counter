@@ -1,0 +1,12 @@
+version: '2'
+services:
+  counter:
+    environment:
+      - REDIS_HOST=redis
+    ports:
+      - 8080:8080
+    image: 'phedoreanu/counter:latest'
+    links:
+      - redis
+  redis:
+    image: 'redis:latest'

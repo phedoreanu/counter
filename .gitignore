@@ -22,3 +22,8 @@ _testmain.go
 *.exe
 *.test
 *.prof
+
+counter
+results.bin
+*.retry
+plot.html
